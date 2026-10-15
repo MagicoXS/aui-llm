@@ -1,0 +1,23 @@
+name: AUI GHOST v16 Build
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: 'temurin', java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v3
+      - name: Generate Keystore
+        run: |
+          keytool -genkey -v -keystore keystore.jks -alias aui -keyalg RSA -keysize 2048 -validity 10000 -storepass 123456 -keypass 123456 -dname "CN=AUI, OU=GHOST, O=MagicoXS, C=EG"
+          echo "KEYSTORE_PATH=$PWD/keystore.jks" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=123456" >> $GITHUB_ENV
+          echo "KEY_ALIAS=aui" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=123456" >> $GITHUB_ENV
+      - name: Build APK
+        run: |
+          chmod +x gradlew || gradle wrapper
+          ./gradlew clean :app:assembleDebug --no-daemon || gradle clean :app:assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with: { name: AUI-GHOST-v16-FINAL, path: app/build/outputs/apk/debug/*.apk }

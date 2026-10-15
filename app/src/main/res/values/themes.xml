@@ -1,0 +1,1 @@
+<resources><style name="Theme.AUI" parent="Theme.Material3.DayNight"><item name="colorPrimary">#FF0000</item><item name="colorPrimaryVariant">#AA0000</item><item name="android:statusBarColor">#000000</item></style></resources>
